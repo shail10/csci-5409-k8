@@ -11,4 +11,4 @@ substitutions:
   _IMAGE_NAME: 'us-docker.pkg.dev/liquid-fort-453318-q8/k8s-assignment/program1'
 
 options:
-  logging: NONE
+  logging: CLOUD_LOGGING_ONLY
