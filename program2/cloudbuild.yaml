@@ -16,7 +16,7 @@ steps:
     args: ['push', '${_IMAGE_NAME}:latest']
 
 substitutions:
-  _IMAGE_NAME: 'us-docker.pkg.dev/liquid-fort-453318-q8/k8s-assignment/program2'
+  _IMAGE_NAME: 'us-docker.pkg.dev/liquid-fort-453318-q8/csci-5409-k8/program2'
 
 options:
   logging: CLOUD_LOGGING_ONLY
