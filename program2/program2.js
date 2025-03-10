@@ -19,7 +19,7 @@ app.post('/sum', (req, res) => {
     if (rows.length < 2) {
       return res.status(400).json({
         file: file,
-        error: 'Input file not in CSV format.',
+        error: 'Input file not in CSV format',
       })
     }
 
