@@ -1,7 +1,15 @@
 steps:
   # Step 1: Build Docker Image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', '${_IMAGE_NAME}:latest', '.']
+    args:
+      [
+        'build',
+        '-t',
+        '${_IMAGE_NAME}:latest',
+        '-f',
+        'program1/Dockerfile',
+        'program1',
+      ]
 
   # Step 2: Push Image to Google Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
