@@ -1,0 +1,11 @@
+steps:
+  # Step 1: Build Docker Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', '${_IMAGE_NAME}:latest', '.']
+
+  # Step 2: Push Image to Google Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', '${_IMAGE_NAME}:latest']
+
+substitutions:
+  _IMAGE_NAME: 'us-docker.pkg.dev/liquid-fort-453318-q8/k8s-assignment/program2'
