@@ -9,37 +9,69 @@ const PORT = 6000
 
 app.use(express.json())
 
+const STORAGE_PATH = '/shail_pv_volume_k8'
+
 app.get('/', (req, res) => {
   res.send('Container 1 is running')
 })
 
-// app.post('/calculate', async (req, res) => {
-//   const { file } = req.body
+app.post('/store-file', (req, res) => {
+  const { file, data } = req.body
 
-//   if (!file) {
-//     return res.json({
-//       file: null,
-//       error: 'Invalid JSON input',
-//     })
-//   }
+  // Validate request
+  if (!file) {
+    return res.status(400).json({
+      file: null,
+      error: 'Invalid JSON input.',
+    })
+  }
 
-//   const filePath = path.join('/data/', file)
+  try {
+    const filePath = path.join(STORAGE_PATH, file)
 
-//   if (!fs.existsSync(filePath)) {
-//     return res.json({
-//       file: file,
-//       error: 'File not found.',
-//     })
-//   }
+    fs.writeFileSync(filePath, data)
 
-//   try {
-//     const response = await axios.post('http://container2:8000/sum', req.body)
-//     return res.json(response.data)
-//   } catch (error) {
-//     return res.status(500).json(error.response.data)
-//   }
-// })
+    return res.status(200).json({
+      file: file,
+      message: 'Success.',
+    })
+  } catch (err) {
+    console.error('File Write Error:', err.message)
+
+    return res.status(500).json({
+      file: file,
+      error: 'Error while storing the file to the storage.',
+    })
+  }
+})
+
+app.post('/calculate', async (req, res) => {
+  const { file } = req.body
+
+  if (!file) {
+    return res.json({
+      file: null,
+      error: 'Invalid JSON input',
+    })
+  }
+
+  const filePath = path.join(STORAGE_PATH, file)
+
+  if (!fs.existsSync(filePath)) {
+    return res.json({
+      file: file,
+      error: 'File not found.',
+    })
+  }
+
+  try {
+    const response = await axios.post('http://program2-service/sum', req.body)
+    return res.json(response.data)
+  } catch (error) {
+    return res.status(500).json(error.response.data)
+  }
+})
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`)
+  console.log(`Container running on port: ${PORT}`)
 })
