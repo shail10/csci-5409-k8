@@ -48,6 +48,8 @@ app.post('/store-file', (req, res) => {
 app.post('/calculate', async (req, res) => {
   const { file } = req.body
 
+  console.log('Calculate api hit')
+
   if (!file) {
     return res.json({
       file: null,

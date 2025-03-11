@@ -14,6 +14,8 @@ app.get('/', (req, res) => {
 })
 
 app.post('/sum', (req, res) => {
+  console.log('sum api hit')
+
   const { file, product } = req.body
 
   try {
