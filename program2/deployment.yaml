@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: program2-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: program2
+  template:
+    metadata:
+      labels:
+        app: program2
+    spec:
+      containers:
+        - name: program2
+          image: us-docker.pkg.dev/liquid-fort-453318-q8/csci-5409-k8/program2:latest
+          volumeMounts:
+            - name: standard-volume
+              mountPath: /shail_pv_volume_k8
+      volumes:
+        - name: standard-volume
+          persistentVolumeClaim:
+            claimName: k8_pvc_standard_rwo

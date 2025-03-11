@@ -15,8 +15,30 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', '${_IMAGE_NAME}:latest']
 
+  # Deploying on kubernetes cluster
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args:
+      - 'apply'
+      - '-f'
+      - 'program2/pvc.yaml'
+      - '-f'
+      - 'program2/deployment.yaml'
+      - '-f'
+      - 'program2/service.yaml'
+    env:
+      - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
+      - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_ZONE}'
+
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args: ['rollout', 'restart', 'deployment/container1-deployment']
+    env:
+      - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
+      - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_ZONE}'
+
 substitutions:
   _IMAGE_NAME: 'us-docker.pkg.dev/liquid-fort-453318-q8/csci-5409-k8/program2'
+  _GKE_CLUSTER: 'csci-5409-k8-clusters'
+  _GKE_ZONE: 'us-central1-c'
 
 options:
   logging: CLOUD_LOGGING_ONLY
