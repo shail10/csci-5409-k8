@@ -50,7 +50,7 @@ steps:
       - 'build'
       - '--no-cache'
       - '-t'
-      - 'us-docker.pkg.dev/liquid-fort-453318-q8/csci-5409-k8/program1:latest'
+      - 'us-docker.pkg.dev/liquid-fort-453318-q8/k8-assignment-registry/program1:latest'
       - '-f'
       - 'program1/Dockerfile'
       - 'program1'
@@ -60,7 +60,7 @@ steps:
     waitFor: ['DOCKER-IMAGE-BUILD']
     args:
       - 'push'
-      - 'us-docker.pkg.dev/liquid-fort-453318-q8/csci-5409-k8/program1:latest'
+      - 'us-docker.pkg.dev/liquid-fort-453318-q8/k8-assignment-registry/program1:latest'
 
   - name: 'gcr.io/cloud-builders/kubectl'
     id: KUBERNETES-DEPLOY-STAGE
