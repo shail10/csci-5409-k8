@@ -71,7 +71,7 @@ steps:
     args:
       - 'apply'
       - '-f'
-      - './deployment.yaml'
+      - 'program1/deployment.yaml'
 
   - name: 'gcr.io/cloud-builders/kubectl'
     id: KUBERNETES-RESTART-PODS
@@ -94,7 +94,7 @@ steps:
     args:
       - 'apply'
       - '-f'
-      - './service.yaml'
+      - 'program1/service.yaml'
 
 options:
   logging: CLOUD_LOGGING_ONLY
