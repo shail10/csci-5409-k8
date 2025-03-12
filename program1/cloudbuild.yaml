@@ -51,9 +51,7 @@ steps:
       - '--no-cache'
       - '-t'
       - 'us-docker.pkg.dev/liquid-fort-453318-q8/csci-5409-k8/program1:latest'
-      - f
-      - 'program1/Dockerfil'
-      - program1
+      - 'program1/Dockerfile'
 
   - name: 'gcr.io/cloud-builders/docker'
     id: DOCKER-PUSH-IMAGE
