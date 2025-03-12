@@ -50,7 +50,9 @@ steps:
       - 'build'
       - '-t'
       - 'us-docker.pkg.dev/liquid-fort-453318-q8/csci-5409-k8/program2:latest'
+      - f
       - 'program2/Dockerfil'
+      - program2
 
   - name: 'gcr.io/cloud-builders/docker'
     id: DOCKER-PUSH-IMAGE
