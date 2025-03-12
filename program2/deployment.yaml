@@ -21,4 +21,4 @@ spec:
       volumes:
         - name: standard-volume
           persistentVolumeClaim:
-            claimName: k8-vc-standard-rwo
+            claimName: pvc-volume

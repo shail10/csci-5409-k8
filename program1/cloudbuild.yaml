@@ -1,44 +1,95 @@
+# steps:
+#   # Step 1: Build Docker Image
+#   - name: 'gcr.io/cloud-builders/docker'
+#     args:
+#       [
+#         'build',
+#         '-t',
+#         '${_IMAGE_NAME}:latest',
+#         '-f',
+#         'program1/Dockerfile',
+#         'program1',
+#       ]
+
+#   # Step 2: Push Image to Google Artifact Registry
+#   - name: 'gcr.io/cloud-builders/docker'
+#     args: ['push', '${_IMAGE_NAME}:latest']
+
+#   # Deploying on kubernetes cluster
+#   - name: 'gcr.io/cloud-builders/kubectl'
+#     args:
+#       - 'apply'
+#       - '-f'
+#       - 'program1/pvc.yaml'
+#       - '-f'
+#       - 'program1/deployment.yaml'
+#       - '-f'
+#       - 'program1/service.yaml'
+#     env:
+#       - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
+#       - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_ZONE}'
+
+#   - name: 'gcr.io/cloud-builders/kubectl'
+#     args: ['rollout', 'restart', 'deployment/program1-deployment']
+#     env:
+#       - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
+#       - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_ZONE}'
+
+# substitutions:
+#   _IMAGE_NAME: 'us-docker.pkg.dev/liquid-fort-453318-q8/csci-5409-k8/program1'
+#   _GKE_CLUSTER: 'csci-5409-k8-clusters'
+#   _GKE_ZONE: 'us-central1-c'
+
+# options:
+#   logging: CLOUD_LOGGING_ONLY
+
 steps:
-  # Step 1: Build Docker Image
   - name: 'gcr.io/cloud-builders/docker'
+    id: DOCKER-IMAGE-BUILD
     args:
-      [
-        'build',
-        '-t',
-        '${_IMAGE_NAME}:latest',
-        '-f',
-        'program1/Dockerfile',
-        'program1',
-      ]
+      - 'build'
+      - '--no-cache'
+      - '-t'
+      - 'us-docker.pkg.dev/liquid-fort-453318-q8/csci-5409-k8/program1:latest'
+      - './'
 
-  # Step 2: Push Image to Google Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', '${_IMAGE_NAME}:latest']
+    id: DOCKER-PUSH-IMAGE
+    waitFor: ['DOCKER-IMAGE-BUILD']
+    args:
+      - 'push'
+      - 'us-docker.pkg.dev/liquid-fort-453318-q8/csci-5409-k8/program1:latest'
 
-  # Deploying on kubernetes cluster
   - name: 'gcr.io/cloud-builders/kubectl'
+    id: KUBERNETES-DEPLOY-STAGE
+    waitFor: ['DOCKER-PUSH-IMAGE']
+    env:
+      - 'CLOUDSDK_CONTAINER_CLUSTER=kubernetes-assignment-cluster'
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
     args:
       - 'apply'
       - '-f'
-      - 'program1/pvc.yaml'
-      - '-f'
-      - 'program1/deployment.yaml'
-      - '-f'
-      - 'program1/service.yaml'
-    env:
-      - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
-      - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_ZONE}'
+      - './deployment.yaml'
 
   - name: 'gcr.io/cloud-builders/kubectl'
-    args: ['rollout', 'restart', 'deployment/program1-deployment']
+    id: KUBERNETES-RESTART-PODS
+    waitFor: ['KUBERNETES-DEPLOY-STAGE']
     env:
-      - 'CLOUDSDK_CONTAINER_CLUSTER=${_GKE_CLUSTER}'
-      - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_ZONE}'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=kubernetes-assignment-cluster'
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+    args:
+      - 'rollout'
+      - 'restart'
+      - 'deployment'
+      - 'program1-deployment'
 
-substitutions:
-  _IMAGE_NAME: 'us-docker.pkg.dev/liquid-fort-453318-q8/csci-5409-k8/program1'
-  _GKE_CLUSTER: 'csci-5409-k8-clusters'
-  _GKE_ZONE: 'us-central1-c'
-
-options:
-  logging: CLOUD_LOGGING_ONLY
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: KUBERNETES-NETWORK-SERVICE-STAGE
+    waitFor: ['KUBERNETES-RESTART-PODS']
+    env:
+      - 'CLOUDSDK_CONTAINER_CLUSTER=kubernetes-assignment-cluster'
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+    args:
+      - 'apply'
+      - '-f'
+      - './service.yaml'
