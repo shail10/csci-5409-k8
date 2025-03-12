@@ -9,7 +9,7 @@ const PORT = 6000
 
 app.use(express.json())
 
-const STORAGE_PATH = '/shail_pv_volume_k8'
+const STORAGE_PATH = '/pv_dir'
 
 app.get('/', (req, res) => {
   res.send('Container 1 is running')

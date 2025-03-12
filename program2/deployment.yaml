@@ -16,9 +16,9 @@ spec:
         - name: program2
           image: us-docker.pkg.dev/liquid-fort-453318-q8/k8-assignment-registry/program2:latest
           volumeMounts:
-            - name: standard-volume
-              mountPath: /shail_pv_volume_k8
+            - name: storage-volume
+              mountPath: /pv_dir
       volumes:
-        - name: standard-volume
+        - name: storage-volume
           persistentVolumeClaim:
-            claimName: k8-vc-standard-rwo
+            claimName: k8-pvc-standard

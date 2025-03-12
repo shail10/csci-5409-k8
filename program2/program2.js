@@ -5,7 +5,7 @@ const path = require('path')
 const app = express()
 const PORT = process.env.PORT || 8000
 
-const STORAGE_PATH = '/shail_pv_volume_k8'
+const STORAGE_PATH = '/pv_dir'
 
 app.use(express.json())
 
