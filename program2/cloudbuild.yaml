@@ -44,52 +44,56 @@
 #   logging: CLOUD_LOGGING_ONLY
 
 steps:
-  - name: 'gcr.io/cloud-builders/docker'
-    id: DOCKER-IMAGE-BUILD
-    args:
-      - 'build'
-      - '-t'
-      - 'us-docker.pkg.dev/liquid-fort-453318-q8/csci-5409-k8/program2:latest'
-      - 'program2/Dockerfile'
+  steps:
+    - name: 'gcr.io/cloud-builders/docker'
+      id: DOCKER-IMAGE-BUILD
+      args:
+        - 'build'
+        - '--no-cache'
+        - '-t'
+        - 'us-docker.pkg.dev/liquid-fort-453318-q8/csci-5409-k8/program2:latest'
+        - '-f'
+        - 'program2/Dockerfile'
+        - 'program2'
 
-  - name: 'gcr.io/cloud-builders/docker'
-    id: DOCKER-PUSH-IMAGE
-    args:
-      - 'push'
-      - 'us-docker.pkg.dev/liquid-fort-453318-q8/csci-5409-k8/program2:latest'
+    - name: 'gcr.io/cloud-builders/docker'
+      id: DOCKER-PUSH-IMAGE
+      args:
+        - 'push'
+        - 'us-docker.pkg.dev/liquid-fort-453318-q8/csci-5409-k8/program2:latest'
 
-  - name: 'gcr.io/cloud-builders/kubectl'
-    id: KUBERNETES-DEPLOY-STAGE
-    env:
-      - 'CLOUDSDK_CONTAINER_CLUSTER=kubernetes-assignment-cluster'
-      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
-    args:
-      - 'apply'
-      - '-f'
-      - './deployment.yaml'
+    - name: 'gcr.io/cloud-builders/kubectl'
+      id: KUBERNETES-DEPLOY-STAGE
+      env:
+        - 'CLOUDSDK_CONTAINER_CLUSTER=kubernetes-assignment-cluster'
+        - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+      args:
+        - 'apply'
+        - '-f'
+        - './deployment.yaml'
 
-  - name: 'gcr.io/cloud-builders/kubectl'
-    id: KUBERNETES-RESTART-PODS
-    waitFor: ['KUBERNETES-DEPLOY-STAGE']
-    env:
-      - 'CLOUDSDK_CONTAINER_CLUSTER=kubernetes-assignment-cluster'
-      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
-    args:
-      - 'rollout'
-      - 'restart'
-      - 'deployment'
-      - 'program2-deployment'
+    - name: 'gcr.io/cloud-builders/kubectl'
+      id: KUBERNETES-RESTART-PODS
+      waitFor: ['KUBERNETES-DEPLOY-STAGE']
+      env:
+        - 'CLOUDSDK_CONTAINER_CLUSTER=kubernetes-assignment-cluster'
+        - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+      args:
+        - 'rollout'
+        - 'restart'
+        - 'deployment'
+        - 'program2-deployment'
 
-  - name: 'gcr.io/cloud-builders/kubectl'
-    id: KUBERNETES-NETWORK-SERVICE-STAGE
-    waitFor: ['KUBERNETES-RESTART-PODS']
-    env:
-      - 'CLOUDSDK_CONTAINER_CLUSTER=kubernetes-assignment-cluster'
-      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
-    args:
-      - 'apply'
-      - '-f'
-      - './service.yaml'
+    - name: 'gcr.io/cloud-builders/kubectl'
+      id: KUBERNETES-NETWORK-SERVICE-STAGE
+      waitFor: ['KUBERNETES-RESTART-PODS']
+      env:
+        - 'CLOUDSDK_CONTAINER_CLUSTER=kubernetes-assignment-cluster'
+        - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+      args:
+        - 'apply'
+        - '-f'
+        - './service.yaml'
 
 options:
   logging: CLOUD_LOGGING_ONLY
