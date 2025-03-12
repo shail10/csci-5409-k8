@@ -35,7 +35,7 @@ steps:
 
 substitutions:
   _IMAGE_NAME: 'us-docker.pkg.dev/liquid-fort-453318-q8/k8-assignment-registry/program1'
-  _GKE_CLUSTER: 'kubernetes-assignment-cluster'
+  _GKE_CLUSTER: 'shail-kubernetes-assignment-cluster'
   _GKE_ZONE: 'us-central1-c'
 
 options:

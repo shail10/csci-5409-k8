@@ -34,8 +34,8 @@ steps:
       - 'CLOUDSDK_COMPUTE_ZONE=${_GKE_ZONE}'
 
 substitutions:
-  _IMAGE_NAME: 'us-docker.pkg.dev/liquid-fort-453318-q8/k8-assignment-registry/program3'
-  _GKE_CLUSTER: 'kubernetes-assignment-cluster'
+  _IMAGE_NAME: 'us-docker.pkg.dev/liquid-fort-453318-q8/k8-assignment-registry/program2'
+  _GKE_CLUSTER: 'shail-kubernetes-assignment-cluster'
   _GKE_ZONE: 'us-central1-c'
 
 options:
