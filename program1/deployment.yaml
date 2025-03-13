@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: program1
-          image: us-docker.pkg.dev/liquid-fort-453318-q8/k8-assignment-registry/program1:latest
+          image: us-docker.pkg.dev/liquid-fort-453318-q8/shail-k8-artifact/program1:latest
           volumeMounts:
             - name: standard-volume
               mountPath: /shail_pv_volume_k8
